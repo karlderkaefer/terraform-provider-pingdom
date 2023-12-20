@@ -1,4 +1,4 @@
-module github.com/karlderkaefer/pingdom-terraform-provider
+module github.com/karlderkaefer/terraform-provider-pingdom
 
 go 1.21
 

@@ -9,7 +9,7 @@ import (
 	"log"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
-	"github.com/karlderkaefer/pingdom-terraform-provider/internal/provider"
+	"github.com/karlderkaefer/terraform-provider-pingdom/internal/provider"
 )
 
 // Run "go generate" to format example terraform files and generate the docs for the registry/website
@@ -39,7 +39,7 @@ func main() {
 
 	opts := providerserver.ServeOpts{
 		// TODO: Update this string with the published name of your provider.
-		Address: "hashicorp.com/karlderkaefer/pingdom-terraform-provider",
+		Address: "registry.terraform.io/karlderkaefer/terraform-provider-pingdom",
 		Debug:   debug,
 	}
 
@@ -49,7 +49,7 @@ func main() {
 		log.Fatal(err.Error())
 	}
 	// opts := providerserver.ServeOpts{
-	// 	Address: "hashicorp.com/karlderkaefer/pingdom-terraform-provider",
+	// 	Address: "hashicorp.com/karlderkaefer/terraform-provider-pingdom",
 	// }
 
 	// err := providerserver.Serve(context.Background(), provider.New(""), opts)
