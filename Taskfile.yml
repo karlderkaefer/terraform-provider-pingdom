@@ -1,0 +1,20 @@
+version: '3'
+
+tasks:
+  build:
+    desc: Build the Terraform provider
+    cmds:
+      - go build -o terraform-provider-pingdom
+    silent: false
+
+  install:
+    deps:
+      - build
+    desc: Install the provider to the Terraform plugins directory
+    cmds:
+      - mkdir -p ~/.terraform.d/plugins/hashicorp.com/karlderkaefer/pingdom/0.1.0/{{.OS_ARCH}}
+      - mv terraform-provider-pingdom ~/.terraform.d/plugins/hashicorp.com/karlderkaefer/pingdom/0.1.0/{{.OS_ARCH}}/
+    vars:
+      OS_ARCH:
+        sh: echo $(uname | tr '[:upper:]' '[:lower:]')_$(uname -m)
+    silent: false

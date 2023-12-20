@@ -1,0 +1,7 @@
+provider:
+  name: pingdom
+data_sources:
+  checks:
+    read:
+      path: /checks
+      method: GET

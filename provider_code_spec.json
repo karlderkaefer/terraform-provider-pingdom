@@ -1,0 +1,206 @@
+{
+	"datasources": [
+		{
+			"name": "checks",
+			"schema": {
+				"attributes": [
+					{
+						"name": "limit",
+						"int64": {
+							"computed_optional_required": "computed_optional",
+							"description": "Limits the number of returned probes to the specified quantity. (Max value is 25000)"
+						}
+					},
+					{
+						"name": "offset",
+						"int64": {
+							"computed_optional_required": "computed_optional",
+							"description": "Offset for listing. (Requires limit.)"
+						}
+					},
+					{
+						"name": "showencryption",
+						"bool": {
+							"computed_optional_required": "computed_optional",
+							"description": "If set, show encryption setting for each check"
+						}
+					},
+					{
+						"name": "include_tags",
+						"bool": {
+							"computed_optional_required": "computed_optional",
+							"description": "Include tag list for each check. Tags can be marked as \"a\" or \"u\", for auto tagged or user tagged."
+						}
+					},
+					{
+						"name": "include_severity",
+						"bool": {
+							"computed_optional_required": "computed_optional",
+							"description": "Include severity level for each check."
+						}
+					},
+					{
+						"name": "tags",
+						"string": {
+							"computed_optional_required": "computed_optional",
+							"description": "Tag list separated by commas. As an example \"nginx,apache\" would filter out all responses except those tagged nginx or apache"
+						}
+					},
+					{
+						"name": "checks",
+						"list_nested": {
+							"computed_optional_required": "computed",
+							"nested_object": {
+								"attributes": [
+									{
+										"name": "created",
+										"int64": {
+											"computed_optional_required": "computed",
+											"description": "Creating time. Format is UNIX timestamp"
+										}
+									},
+									{
+										"name": "hostname",
+										"string": {
+											"computed_optional_required": "computed",
+											"description": "Target host"
+										}
+									},
+									{
+										"name": "id",
+										"int64": {
+											"computed_optional_required": "computed"
+										}
+									},
+									{
+										"name": "ipv6",
+										"bool": {
+											"computed_optional_required": "computed",
+											"description": "Use ipv6 instead of ipv4"
+										}
+									},
+									{
+										"name": "lastdownend",
+										"int64": {
+											"computed_optional_required": "computed",
+											"description": "Timestamp of end of last check down (if any). Format is UNIX timestamp. During a downtime it will be lasttesttime."
+										}
+									},
+									{
+										"name": "lastdownstart",
+										"int64": {
+											"computed_optional_required": "computed",
+											"description": "Timestamp of start of last check down (if any). Format is UNIX timestamp."
+										}
+									},
+									{
+										"name": "lasterrortime",
+										"int64": {
+											"computed_optional_required": "computed",
+											"description": "Timestamp of last error (if any). Format is UNIX timestamp"
+										}
+									},
+									{
+										"name": "lastresponsetime",
+										"int64": {
+											"computed_optional_required": "computed",
+											"description": "Response time (in milliseconds) of last test."
+										}
+									},
+									{
+										"name": "lasttesttime",
+										"int64": {
+											"computed_optional_required": "computed",
+											"description": "Timestamp of last test (if any). Format is UNIX timestamp"
+										}
+									},
+									{
+										"name": "name",
+										"string": {
+											"computed_optional_required": "computed"
+										}
+									},
+									{
+										"name": "resolution",
+										"int64": {
+											"computed_optional_required": "computed",
+											"description": "How often should the check be tested? (minutes)"
+										}
+									},
+									{
+										"name": "status",
+										"string": {
+											"computed_optional_required": "computed"
+										}
+									},
+									{
+										"name": "tags",
+										"list_nested": {
+											"computed_optional_required": "computed",
+											"nested_object": {
+												"attributes": [
+													{
+														"name": "count",
+														"int64": {
+															"computed_optional_required": "computed"
+														}
+													},
+													{
+														"name": "name",
+														"string": {
+															"computed_optional_required": "computed"
+														}
+													},
+													{
+														"name": "type",
+														"string": {
+															"computed_optional_required": "computed"
+														}
+													}
+												]
+											},
+											"description": "List of tags for check"
+										}
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "counts",
+						"single_nested": {
+							"computed_optional_required": "computed",
+							"attributes": [
+								{
+									"name": "filtered",
+									"int64": {
+										"computed_optional_required": "computed",
+										"description": "Number of checks after limit was applied"
+									}
+								},
+								{
+									"name": "limited",
+									"int64": {
+										"computed_optional_required": "computed",
+										"description": "Number of checks after tags filter was applied"
+									}
+								},
+								{
+									"name": "total",
+									"int64": {
+										"computed_optional_required": "computed",
+										"description": "Total number of checks"
+									}
+								}
+							]
+						}
+					}
+				]
+			}
+		}
+	],
+	"provider": {
+		"name": "pingdom"
+	},
+	"version": "0.1"
+}
