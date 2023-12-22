@@ -5,14 +5,16 @@ package provider
 
 import (
 	"context"
+	"os"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 
-	pingdom_client "github.com/karlderkaefer/pingdom-golang-client/pkg/pingdom/client"
+	"github.com/deepmap/oapi-codegen/pkg/securityprovider"
 )
 
 // Ensure ScaffoldingProvider satisfies various provider interfaces.
@@ -46,8 +48,9 @@ func (p *PingdomProvider) Schema(ctx context.Context, req provider.SchemaRequest
 			},
 			"api_token": schema.StringAttribute{
 				MarkdownDescription: "Pingdom API token for authentication",
-				Required:            true,
-				Sensitive:           true, // Mark as sensitive to prevent logging
+
+				Required:  true,
+				Sensitive: true, // Mark as sensitive to prevent logging
 			},
 		},
 	}
@@ -62,23 +65,36 @@ func (p *PingdomProvider) Configure(ctx context.Context, req provider.ConfigureR
 		return
 	}
 
+	// Use api_token from configuration, or fallback to environment variable if not provided
+	apiToken := data.ApiToken.ValueString()
+	if apiToken == "" {
+		apiToken = os.Getenv("PINGDOM_API_TOKEN")
+	}
+
+	if apiToken == "" {
+		resp.Diagnostics.AddError("Missing API Token", "The 'api_token' attribute is required but was not provided, and environment variable 'PINGDOM_API_TOKEN' is not set.")
+		return
+	}
+
 	// Configuration values are now available.
 	// if data.Endpoint.IsNull() { /* ... */ }
 
 	// Example client configuration for data sources and resources
-	client := pingdom_client.NewDefaultApiTokenClient(data.ApiToken.ValueString())
-	resp.DataSourceData = client
-	resp.ResourceData = client
+	bearerTokenProvider, err := securityprovider.NewSecurityProviderBearerToken(apiToken)
+	if err != nil {
+		tflog.Error(ctx, "Error creating Pingdom client: "+err.Error())
+	}
+	resp.DataSourceData = bearerTokenProvider
+	resp.ResourceData = bearerTokenProvider
 }
 
 func (p *PingdomProvider) Resources(ctx context.Context) []func() resource.Resource {
-	return []func() resource.Resource{
-	}
+	return []func() resource.Resource{}
 }
 
 func (p *PingdomProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
-		NewChecksDataSource,
+		NewTransactionChecksDataSource,
 	}
 }
 

@@ -1,49 +1,57 @@
 {
 	"datasources": [
 		{
-			"name": "checks",
+			"name": "transaction_checks",
 			"schema": {
 				"attributes": [
 					{
-						"name": "limit",
-						"int64": {
-							"computed_optional_required": "computed_optional",
-							"description": "Limits the number of returned probes to the specified quantity. (Max value is 25000)"
-						}
-					},
-					{
-						"name": "offset",
-						"int64": {
-							"computed_optional_required": "computed_optional",
-							"description": "Offset for listing. (Requires limit.)"
-						}
-					},
-					{
-						"name": "showencryption",
+						"name": "extended_tags",
 						"bool": {
 							"computed_optional_required": "computed_optional",
-							"description": "If set, show encryption setting for each check"
-						}
-					},
-					{
-						"name": "include_tags",
-						"bool": {
-							"computed_optional_required": "computed_optional",
-							"description": "Include tag list for each check. Tags can be marked as \"a\" or \"u\", for auto tagged or user tagged."
-						}
-					},
-					{
-						"name": "include_severity",
-						"bool": {
-							"computed_optional_required": "computed_optional",
-							"description": "Include severity level for each check."
+							"description": "Specifies whether to return an extended tags representation in the response (with type and count)."
 						}
 					},
 					{
 						"name": "tags",
+						"list": {
+							"computed_optional_required": "computed_optional",
+							"element_type": {
+								"string": {}
+							},
+							"description": "Tag list separated by commas. As an example \"nginx,apache\" would filter out all responses except those tagged nginx or apache"
+						}
+					},
+					{
+						"name": "type",
 						"string": {
 							"computed_optional_required": "computed_optional",
-							"description": "Tag list separated by commas. As an example \"nginx,apache\" would filter out all responses except those tagged nginx or apache"
+							"description": "Filter to return only checks of a given type (a TMS `script` or a WPM `recording`). If not provided, all checks are returned.",
+							"validators": [
+								{
+									"custom": {
+										"imports": [
+											{
+												"path": "github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+											}
+										],
+										"schema_definition": "stringvalidator.OneOf(\n\"script\",\n\"recording\",\n)"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "limit",
+						"string": {
+							"computed_optional_required": "computed_optional",
+							"description": "Limit of returned checks"
+						}
+					},
+					{
+						"name": "offset",
+						"string": {
+							"computed_optional_required": "computed_optional",
+							"description": "Offset of returned checks"
 						}
 					},
 					{
@@ -53,146 +61,94 @@
 							"nested_object": {
 								"attributes": [
 									{
-										"name": "created",
-										"int64": {
+										"name": "active",
+										"bool": {
 											"computed_optional_required": "computed",
-											"description": "Creating time. Format is UNIX timestamp"
+											"description": "Check status: active or inactive"
 										}
 									},
 									{
-										"name": "hostname",
-										"string": {
+										"name": "created_at",
+										"int64": {
 											"computed_optional_required": "computed",
-											"description": "Target host"
+											"description": "Timestamp when the check was created"
 										}
 									},
 									{
 										"name": "id",
 										"int64": {
-											"computed_optional_required": "computed"
-										}
-									},
-									{
-										"name": "ipv6",
-										"bool": {
 											"computed_optional_required": "computed",
-											"description": "Use ipv6 instead of ipv4"
+											"description": "Id of the check"
 										}
 									},
 									{
-										"name": "lastdownend",
+										"name": "interval",
 										"int64": {
 											"computed_optional_required": "computed",
-											"description": "Timestamp of end of last check down (if any). Format is UNIX timestamp. During a downtime it will be lasttesttime."
+											"description": "TMS test intervals in minutes. Allowed intervals: 5,10,20,60,720,1440. The interval you're allowed to set may vary depending on your current plan."
 										}
 									},
 									{
-										"name": "lastdownstart",
+										"name": "last_downtime_end",
 										"int64": {
 											"computed_optional_required": "computed",
-											"description": "Timestamp of start of last check down (if any). Format is UNIX timestamp."
+											"description": "Timestamp when the last downtime ended. This field is optional"
 										}
 									},
 									{
-										"name": "lasterrortime",
+										"name": "last_downtime_start",
 										"int64": {
 											"computed_optional_required": "computed",
-											"description": "Timestamp of last error (if any). Format is UNIX timestamp"
+											"description": "Timestamp when the last downtime started. This field is optional"
 										}
 									},
 									{
-										"name": "lastresponsetime",
+										"name": "modified_at",
 										"int64": {
 											"computed_optional_required": "computed",
-											"description": "Response time (in milliseconds) of last test."
-										}
-									},
-									{
-										"name": "lasttesttime",
-										"int64": {
-											"computed_optional_required": "computed",
-											"description": "Timestamp of last test (if any). Format is UNIX timestamp"
+											"description": "Timestamp when the check was modified"
 										}
 									},
 									{
 										"name": "name",
 										"string": {
-											"computed_optional_required": "computed"
+											"computed_optional_required": "computed",
+											"description": "Name of the check"
 										}
 									},
 									{
-										"name": "resolution",
-										"int64": {
+										"name": "region",
+										"string": {
 											"computed_optional_required": "computed",
-											"description": "How often should the check be tested? (minutes)"
+											"description": "Name of the region where the check is executed. Supported regions: us-east, us-west, eu, au"
 										}
 									},
 									{
 										"name": "status",
 										"string": {
-											"computed_optional_required": "computed"
+											"computed_optional_required": "computed",
+											"description": "Whether the check is passing or failing at the moment (successful, failing, unknown)"
 										}
 									},
 									{
 										"name": "tags",
-										"list_nested": {
+										"list": {
 											"computed_optional_required": "computed",
-											"nested_object": {
-												"attributes": [
-													{
-														"name": "count",
-														"int64": {
-															"computed_optional_required": "computed"
-														}
-													},
-													{
-														"name": "name",
-														"string": {
-															"computed_optional_required": "computed"
-														}
-													},
-													{
-														"name": "type",
-														"string": {
-															"computed_optional_required": "computed"
-														}
-													}
-												]
+											"element_type": {
+												"string": {}
 											},
-											"description": "List of tags for check"
+											"description": "List of tags for a check. The tag name may contain the characters 'A-Z', 'a-z', '0-9', '_' and '-'. The maximum length of a tag is 64 characters."
+										}
+									},
+									{
+										"name": "type",
+										"string": {
+											"computed_optional_required": "computed",
+											"description": "Type of transaction check: \"script\" for regular TMS checks and \"recording\" for checks made using the Transaction Recorder"
 										}
 									}
 								]
 							}
-						}
-					},
-					{
-						"name": "counts",
-						"single_nested": {
-							"computed_optional_required": "computed",
-							"attributes": [
-								{
-									"name": "filtered",
-									"int64": {
-										"computed_optional_required": "computed",
-										"description": "Number of checks after limit was applied"
-									}
-								},
-								{
-									"name": "limited",
-									"int64": {
-										"computed_optional_required": "computed",
-										"description": "Number of checks after tags filter was applied"
-									}
-								},
-								{
-									"name": "total",
-									"int64": {
-										"computed_optional_required": "computed",
-										"description": "Total number of checks"
-									}
-								}
-							]
 						}
 					}
 				]

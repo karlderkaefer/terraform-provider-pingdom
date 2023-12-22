@@ -1,10 +1,14 @@
-# terraform {
-#   required_providers {
-#     pingdom = {
-#       source = "localhost/karlderkaefer/terraform-provider-pingdom"
-#       version = "0.1.0"
-#     }
-#   }
-# }
 
-# provider "pingdom" {}
+terraform {
+  required_providers {
+    pingdom = {
+      source = "registry.terraform.io/karlderkaefer/pingdom"
+    }
+  }
+}
+
+provider "pingdom" {}
+
+
+data "pingdom_transaction_checks" "example" {
+}

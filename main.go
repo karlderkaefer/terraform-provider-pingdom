@@ -39,7 +39,7 @@ func main() {
 
 	opts := providerserver.ServeOpts{
 		// TODO: Update this string with the published name of your provider.
-		Address: "registry.terraform.io/karlderkaefer/terraform-provider-pingdom",
+		Address: "registry.terraform.io/karlderkaefer/pingdom",
 		Debug:   debug,
 	}
 
@@ -48,12 +48,4 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	// opts := providerserver.ServeOpts{
-	// 	Address: "hashicorp.com/karlderkaefer/terraform-provider-pingdom",
-	// }
-
-	// err := providerserver.Serve(context.Background(), provider.New(""), opts)
-	// if err != nil {
-	// 	log.Fatal(err.Error())
-	// }
 }

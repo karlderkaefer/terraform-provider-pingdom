@@ -1,20 +1,21 @@
 version: '3'
 
 tasks:
-  build:
-    desc: Build the Terraform provider
-    cmds:
-      - go build -o terraform-provider-pingdom
-    silent: false
 
-  install:
-    deps:
-      - build
-    desc: Install the provider to the Terraform plugins directory
+  generate:
+    desc: Generate Terraform files
     cmds:
-      - mkdir -p ~/.terraform.d/plugins/hashicorp.com/karlderkaefer/pingdom/0.1.0/{{.OS_ARCH}}
-      - mv terraform-provider-pingdom ~/.terraform.d/plugins/hashicorp.com/karlderkaefer/pingdom/0.1.0/{{.OS_ARCH}}/
-    vars:
-      OS_ARCH:
-        sh: echo $(uname | tr '[:upper:]' '[:lower:]')_$(uname -m)
+      - |
+         tfplugingen-openapi generate \
+          --config ./generator_config.yml \
+          --output ./provider_code_spec.json \
+          ./openapi_spec.yaml
+      - |
+         tfplugingen-framework generate all \
+          --input provider_code_spec.json \
+          --output internal/provider --package provider
     silent: false
+  scaffold-datasource:
+    desc: create a skaffoled datasource which can edited afterwards
+    cmds:
+      - tfplugingen-framework scaffold data-source --name transaction_checks --output-dir ./internal/provider
