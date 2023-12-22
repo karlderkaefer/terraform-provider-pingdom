@@ -1,0 +1,162 @@
+{
+	"datasources": [
+		{
+			"name": "transaction_checks",
+			"schema": {
+				"attributes": [
+					{
+						"name": "extended_tags",
+						"bool": {
+							"computed_optional_required": "computed_optional",
+							"description": "Specifies whether to return an extended tags representation in the response (with type and count)."
+						}
+					},
+					{
+						"name": "tags",
+						"list": {
+							"computed_optional_required": "computed_optional",
+							"element_type": {
+								"string": {}
+							},
+							"description": "Tag list separated by commas. As an example \"nginx,apache\" would filter out all responses except those tagged nginx or apache"
+						}
+					},
+					{
+						"name": "type",
+						"string": {
+							"computed_optional_required": "computed_optional",
+							"description": "Filter to return only checks of a given type (a TMS `script` or a WPM `recording`). If not provided, all checks are returned.",
+							"validators": [
+								{
+									"custom": {
+										"imports": [
+											{
+												"path": "github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+											}
+										],
+										"schema_definition": "stringvalidator.OneOf(\n\"script\",\n\"recording\",\n)"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "limit",
+						"string": {
+							"computed_optional_required": "computed_optional",
+							"description": "Limit of returned checks"
+						}
+					},
+					{
+						"name": "offset",
+						"string": {
+							"computed_optional_required": "computed_optional",
+							"description": "Offset of returned checks"
+						}
+					},
+					{
+						"name": "checks",
+						"list_nested": {
+							"computed_optional_required": "computed",
+							"nested_object": {
+								"attributes": [
+									{
+										"name": "active",
+										"bool": {
+											"computed_optional_required": "computed",
+											"description": "Check status: active or inactive"
+										}
+									},
+									{
+										"name": "created_at",
+										"int64": {
+											"computed_optional_required": "computed",
+											"description": "Timestamp when the check was created"
+										}
+									},
+									{
+										"name": "id",
+										"int64": {
+											"computed_optional_required": "computed",
+											"description": "Id of the check"
+										}
+									},
+									{
+										"name": "interval",
+										"int64": {
+											"computed_optional_required": "computed",
+											"description": "TMS test intervals in minutes. Allowed intervals: 5,10,20,60,720,1440. The interval you're allowed to set may vary depending on your current plan."
+										}
+									},
+									{
+										"name": "last_downtime_end",
+										"int64": {
+											"computed_optional_required": "computed",
+											"description": "Timestamp when the last downtime ended. This field is optional"
+										}
+									},
+									{
+										"name": "last_downtime_start",
+										"int64": {
+											"computed_optional_required": "computed",
+											"description": "Timestamp when the last downtime started. This field is optional"
+										}
+									},
+									{
+										"name": "modified_at",
+										"int64": {
+											"computed_optional_required": "computed",
+											"description": "Timestamp when the check was modified"
+										}
+									},
+									{
+										"name": "name",
+										"string": {
+											"computed_optional_required": "computed",
+											"description": "Name of the check"
+										}
+									},
+									{
+										"name": "region",
+										"string": {
+											"computed_optional_required": "computed",
+											"description": "Name of the region where the check is executed. Supported regions: us-east, us-west, eu, au"
+										}
+									},
+									{
+										"name": "status",
+										"string": {
+											"computed_optional_required": "computed",
+											"description": "Whether the check is passing or failing at the moment (successful, failing, unknown)"
+										}
+									},
+									{
+										"name": "tags",
+										"list": {
+											"computed_optional_required": "computed",
+											"element_type": {
+												"string": {}
+											},
+											"description": "List of tags for a check. The tag name may contain the characters 'A-Z', 'a-z', '0-9', '_' and '-'. The maximum length of a tag is 64 characters."
+										}
+									},
+									{
+										"name": "type",
+										"string": {
+											"computed_optional_required": "computed",
+											"description": "Type of transaction check: \"script\" for regular TMS checks and \"recording\" for checks made using the Transaction Recorder"
+										}
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		}
+	],
+	"provider": {
+		"name": "pingdom"
+	},
+	"version": "0.1"
+}

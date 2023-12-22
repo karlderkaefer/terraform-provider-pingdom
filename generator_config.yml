@@ -1,0 +1,7 @@
+provider:
+  name: pingdom
+data_sources:
+  transaction_checks:
+    read:
+      path: '/tms/check'
+      method: GET
